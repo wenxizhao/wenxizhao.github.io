@@ -1,25 +1,64 @@
 ---
 layout: post
-title:  "Welcome to my blog!"
+title:  "一条数据狗的车辆保险研究"
 date:   2016-07-03 15:42:32 +0800
 categories: jekyll update
 ---
-You’ll find this post in your `_posts` directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run `jekyll serve`, which launches a web server and auto-regenerates your site when a file is updated.
+### 不想再说“不知道”
 
-To add new posts, simply add a file in the `_posts` directory that follows the convention `YYYY-MM-DD-name-of-post.ext` and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.
+毕业进了保险坑，身边的朋友在需要保险的时候会想到向我咨询保险，每次我都非常惭愧的说：我就是一个管系统的，不懂业务，不好意思哈，不知道。随着时间的推移，偶尔从业务部门同事那听说一点保险知识，想分享给别人，又怕自己知道的太片面太局限。于是，想着利用自己的优势，从数据上全面认识保险。下面就车险数据做了一些分析，希望对大家买车险有帮助。
 
-Jekyll also offers powerful support for code snippets:
+### 让数据说话
 
-{% highlight ruby %}
-def print_hi(name)
-  puts "Hi, #{name}"
-end
-print_hi('Tom')
-#=> prints 'Hi, Tom' to STDOUT.
-{% endhighlight %}
+数据样本为2015年1月份承保的车辆，以及这些车辆在2015年的出险情况。在分析过程中发现了一些有趣的现象，让我细细道来。
 
-Check out the [Jekyll docs][jekyll-docs] for more info on how to get the most out of Jekyll. File all bugs/feature requests at [Jekyll’s GitHub repo][jekyll-gh]. If you have questions, you can ask them on [Jekyll Talk][jekyll-talk].
+一、最赔钱的是货车
 
-[jekyll-docs]: http://jekyllrb.com/docs/home
-[jekyll-gh]:   https://github.com/jekyll/jekyll
-[jekyll-talk]: https://talk.jekyllrb.com/
+![clausetype]({{site.baseurl}}/pictures/baoxian1/clausetype.jpg)
+
+上图是不同用途的车辆分析情况。简单粗暴地解释，投保数就是有多少车买保险，报案数就是这些买保险的车中有多少出险报案。出险比例就是报案数除以投保数。
+
+从图上可以看出货车的出险比例最高，2015年1月份有679辆货车买保险，其中141辆车在2015年发生过事故，计算出它的出险比例为20.77%。紧接着是特种车类、越野车类、轿车类出险比例高（特种车是指装载油料、气体、液体或者用于清洁、装卸、搅拌、起重等各种专用机动车）。在百度搜索“货车出险率”可以搜到曾经保险公司因为货车出现率高而拒保的新闻，也有种说法，对保险公司而言，货车就是赔本生意。可见，我这个分析结果跟现实情况表现一致，我选取的样本比较可信。
+
+二、车越好，报案的次数越多
+
+基于这个样本，我分析了一下不同国家生产的车辆出险比例，国产车的出险比例9.58%，合资车出险比例11.06%，进口车出险比例13.67%。国产车的出险比例比较小，进口车的出险比例反而高，这个结果有点意外。
+
+![country]({{site.baseurl}}/pictures/baoxian1/country.png)
+
+之前我的结论是，数据证明我们需要对国产车有信心。一个朋友给了另一种更合理的解释。国产车一般便宜，出险如果不是大事故，为了不影响第二年的保费，车主会选择自己去修，所以出险比例低。进口车，修费用高，车主一般会选择报保险，因此出现率比较高。车险费改之后（费改之后出险次数，会影响第二年的保费），小额维修费自己掏，大额维修费报保险的现象会更明显。
+
+三、买了不吃亏、买了不上当的险种
+
+关于车险，大家普遍关心的还是买什么险，于是我统计了一下各险种的购买和出险情况。数据剔除了购买数据少，出险数据也少的个别险种，比如“机动车停驶损失险条款”，2015年1月卖出3份，全年出险1次。
+
+![kindcode]({{site.baseurl}}/pictures/baoxian1/kindcode.png)
+
+假设每月销售情况一致的，从图上可以看出车上人员责任险（包括司机和乘客）出险次数少，即便如此，顾客购买车上人员责任险的意愿仍比较强烈，毕竟一旦发生交通事故，身上人员没有保险的后果是一般人难以承受的。同样有比较高购买热情的还有盗抢险、机动车损失保险、第三者责任保险、交强险。
+
+购买车险的朋友，多多少少都担心买少了得不到保障，又担心买多了浪费钱。有了这个分析，可以考虑购买车上人员责任险、盗抢险、机动车损失保险、第三者责任保险，这些险种是广大人民群众的集体智慧的结晶。交强险必须买，这就不用强调了。
+
+至于玻璃单独破损险、新增加设备损失险、车身划痕损失险，根据自身需求来买。毕竟保险的本质是服务，买不买取决于你需不需要这项服务。
+
+四、什么车一定要买盗抢险
+
+俗话说，不怕贼偷就怕贼惦记，哪个品牌的车容易被惦记呢？以2015年全年的盗抢险数据为样本，让我们看看哪些车容易被贼惦记。
+
+![jqx]({{site.baseurl}}/pictures/baoxian1/jqx.png)
+
+2015年全年共有79个品牌发生1197次盗抢险，图上只展示了超过10次的品牌。从图上可以看出，上海通用五菱、东方本田、广汽本田的车被惦记的次数最多。接下来再详细分析。
+
+![shtywl]({{site.baseurl}}/pictures/baoxian1/shtywl.png)
+
+2015年上海通用五菱共发生227次盗抢险，其中宏光占了162次，荣光占了51次。
+
+![dfbt]({{site.baseurl}}/pictures/baoxian1/dfbt.png)
+
+东风本田用发生216次盗抢险，其中思威CR-V占了188次，杰德占了13次。
+
+![gqbt]({{site.baseurl}}/pictures/baoxian1/gqbt.png)
+
+广汽本田共发生188次盗抢险，雅阁占了106次，歌诗图占了31次。
+
+这几张图出来之后，我只想问宏光、思威CR-V、雅阁的车主们，你们的车还好吗？如果偷车贼有一张数据地图的话，他心目中的易盗车辆，应该跟我的分析一致。结论不用多说，该买盗抢险的赶紧买，该升级车锁的赶紧升级。
+
