@@ -1,15 +1,23 @@
 ---
 layout: page
-title: About
+title: 关于博主
 permalink: /about/
 ---
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](http://jekyllrb.com/)
+![me]({{site.baseurl}}/pictures/me/me.jpg)
 
-You can find the source code for the Jekyll new theme at:
-{% include icon-github.html username="jglovier" %} /
-[jekyll-new](https://github.com/jglovier/jekyll-new)
+对技术大牛无限崇拜,依葫芦画瓢搭个博客
 
-You can find the source code for Jekyll at
-{% include icon-github.html username="jekyll" %} /
-[jekyll](https://github.com/jekyll/jekyll)
+对新奇的事充满好奇
+
+对糕点甜品无法抵抗
+
+懂点软件开发
+
+懂点数据库操作
+
+懂点系统运维
+
+最后,懂点保险
+
+
