@@ -8,11 +8,12 @@
 # Site settings
 title: 文溪的博客
 email: wenxizhao@163.com
-description: > # 善为脚,勤为手,勇为魄,慧为眼,爱为心
+description: > # this means to ignore newlines until "baseurl:"
+  善为脚,勤为手,勇为魄,慧为眼,爱为心
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://yourdomain.com" # the base hostname & protocol for your site
-twitter_username: jekyllrb
-github_username:  jekyll
+twitter_username: 知乎
+github_username:  github
 
 # Build settings
 markdown: kramdown
