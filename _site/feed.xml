@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Your awesome title</title>
-    <description>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.
+    <title>文溪的博客</title>
+    <description>善为脚,勤为手,勇为魄,慧为眼,爱为心
 </description>
     <link>http://yourdomain.com/</link>
     <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 03 Jul 2016 15:42:48 +0800</pubDate>
-    <lastBuildDate>Sun, 03 Jul 2016 15:42:48 +0800</lastBuildDate>
+    <pubDate>Sat, 09 Jul 2016 22:17:04 +0800</pubDate>
+    <lastBuildDate>Sat, 09 Jul 2016 22:17:04 +0800</lastBuildDate>
     <generator>Jekyll v3.1.1</generator>
     
       <item>
-        <title>Welcome to Jekyll!</title>
+        <title>Welcome to my blog!</title>
         <description>&lt;p&gt;You’ll find this post in your &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory. Go ahead and edit it and re-build the site to see your changes. You can rebuild the site in many different ways, but the most common way is to run &lt;code class=&quot;highlighter-rouge&quot;&gt;jekyll serve&lt;/code&gt;, which launches a web server and auto-regenerates your site when a file is updated.&lt;/p&gt;
 
 &lt;p&gt;To add new posts, simply add a file in the &lt;code class=&quot;highlighter-rouge&quot;&gt;_posts&lt;/code&gt; directory that follows the convention &lt;code class=&quot;highlighter-rouge&quot;&gt;YYYY-MM-DD-name-of-post.ext&lt;/code&gt; and includes the necessary front matter. Take a look at the source for this post to get an idea about how it works.&lt;/p&gt;
@@ -35,6 +35,17 @@
         <category>jekyll</category>
         
         <category>update</category>
+        
+      </item>
+    
+      <item>
+        <title>Hello</title>
+        <description>&lt;h3 id=&quot;hello-jekyll&quot;&gt;hello jekyll!&lt;/h3&gt;
+</description>
+        <pubDate>Sun, 03 Jul 2016 00:00:00 +0800</pubDate>
+        <link>http://yourdomain.com/2016/07/03/hello.html</link>
+        <guid isPermaLink="true">http://yourdomain.com/2016/07/03/hello.html</guid>
+        
         
       </item>
     
