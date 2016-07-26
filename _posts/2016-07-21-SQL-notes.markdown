@@ -1,0 +1,187 @@
+---
+layout: post
+title:  "SQL优化"
+date:   2016-07-21 15:42:32 +0800
+categories: work notes
+---
+# SQL优化
+### 索引
+#### 一.索引的开销
+索引的建立需要空间。
+
+索引的维护需要额外成本
+
+insert:插入数据，索引B+树添加节点。
+
+update:更新数据，索引B+树调整。
+
+delete：删数据，索引B+树打作废标记。
+#### 二.不使用索引的情况
+- 特别的函数
+
+` where DATE(flowintime) = "2009/02/06“ `
+
+- 字段类型转换
+
+` where operatorcode = 5104010203 `
+
+int转char
+
+- 选择度是决定是否使用索引的关键
+
+例如
+
+where company like '510401%'
+会使用索引，where company like '%510401%'不会使用索引。
+
+Where useflag[1,2]=‘11’会使用索引，Where useflag[2,3]=‘11’不会使用索引。
+
+##### 三.建索引建议
+
+###### 1. 组合索引是顺序的，不是组合的。
+
+如，索引（a,b,c），（a,b）会走索引，（b,c）不会走索引（新版informix会走索引）。
+
+有组合索引（a,b,c）时，索引（a,b）和（a）就不必要了，索引（a,c）必要。
+
+###### 2. 选择重复度低的列建索引，最好选择重复度为1的列。如果非要在重读度高的列建索引，与另一个重复度低的列建组合索引。
+
+例如，useflag，只有0,1两个值，建索引效率就很低。
+
+索引分析SQL语句：
+
+```
+select 	tabname,     -- 表名
+	a.nrows,		-- 表的记录数、
+	a.rowsize,	-- 记录长度
+	idxname,	-- 索引名称
+	idxtype,		-- 索引类型
+	nunique,		-- 首列的唯一值
+	a.nrows/nunique as dupl,	-- 重复度
+	levels 		-- 索引层次
+from systables a,sysindexes bwhere a.tabid = b.tabid and a.tabid>=100
+And idxtype = “D”
+And nunique > 0
+Order by 7 desc
+```
+
+###### 3. 创建索引最好单独制定数据空间，不要与表空间放一起。
+
+` create index idx1 on table(col) in idxdbs; `
+
+###### 4. 创建或删除索引时，加上online，可以不用独占表。
+
+` create index idx1 on tab01(deskdate) in idxdbs online; `
+
+###### 5. 对某个字段值的计算结果作为索引。
+
+（1）如果需要对某个字段值的计算结果作为索引，可以创建函数索引(注意:创建或删除函数索引不能用online).
+
+首先创建函数
+```
+CREATE FUNCTION getdealflag(pstr CHAR(255)) returns CHAR(1) WITH (NOT VARIANT);
+IF pstr[1,1] = '0' OR pstr[1,1] = '1’ THEN
+    IF pstr[4,5] = '00’  AND pstr[7] = '0' THEN
+        RETURN '1';
+    END IF;
+END IF;
+RETURN '0';
+END FUNCTION;
+```
+
+创建索引
+
+```
+create index ininterfacei08 on sffininterface (mergeno,
+getdealflag(dealflag),comcode,documenttype,useflag)
+```
+
+SQL使用
+
+```
+where mergeno=‘aaa’ and getdealflag(dealflag)=‘1’ and comcode matches ‘5101*’
+and documenttype in (‘01’,’02’) and useflag[1] = ‘1’
+```
+（2） 如果以某几个字段为条件，取出列的某个字段的最大或最小值，可以创建包含运算字段的复合索引。注意，运算的字段一定要放在索引的最后一个字段。
+
+创建索引
+
+```
+create index billprintdei05 on SffBillPrintDe (opcode, billtype , billno, billedition , sffid)
+```
+
+使用例子
+
+```
+where d1.sffid=(      SELECT MAX(sffid) FROM
+    sffbillprintde WHERE billno is not null
+    and billedition is not null
+     and billtype='701' AND
+    opCode='5104970025'  )
+```
+
+##### 四.使用索引技巧
+###### 1. 当实体表体量大，临时表体量小时。实际列加函数，阻止起走索引，而是遍历临时表。
+例：sffdocdetail是实表，数据量大；tmp是临时表，量小。
+```
+select * from sffdocdetail a.tmp b
+where a.sffid=b.sffid
+and trim(a.comcode)='5101'
+and date(a.deskdate)=today;
+```
+###### 2.类型转换成索引列的类型
+例，tcol4为char型，suffixno为int型，如果不转换，使用不到tcol4的索引。
+e.tcol4=cast(a.suffixno as char(20))
+##### 五.SQL执行优先级
+
+如果是多CPU环境，在SQL语句前加上语句：set pdqpriority 30 （0<=数字< 100)，可以提高SQL的查询速。  
+注意：CPU个数不是很多，后台执行的SQL查询会话较多，不要使用PDQ
+可以通过onstat –u命令，检查会话是否有并行处理。  
+创建索引时，使用PDQ，会加快执行速度。  
+
+##### 五.SQL监控分析
+###### 1.onstat监控
+onstat 命令，可以查看日志、用户、磁盘等等  
+onstat -u（用户线索和事务  ）
+```
+address  flags   sessid   user     tty      wait     tout locks nreads   nwrites
+c57f1018 ---P--D 1        informix -        0        0    0     757      36481
+c57f1504 ---P--F 0        informix -        0        0    0     0        377273
+c57f19f0 ---P--- 5        informix -        0        0    0     0        6742
+```
+其中：flages字段的含义:    
+第一列：（S：等待mutex；Y：等待条 件；L：等待锁；B：等待缓冲区；  C：等待检查点；X：长事务清理；G：等待长缓冲写；T：等待事务）  第二列：（*：事务执行时，发生I/O错误）   
+第三列：（A：正在备份；B：操作已被记录在日志中；P：分布处理已准备好； C：正在提交；R：正在回滚）  
+第四列：（P：会话的主线索  
+第五列：（R：在read rsam 调用中；X：进程在关键分区  
+第七列：（M：特殊监控；D：特殊线索；C：清理线索；F：特殊清页进程；  B：特殊B+树清页线索）
+ 
+如果线索持续处于某一种状态(L-|PX|PR|BP) ，则一般说明有性能问题  
+###### 2.一些监控命令
+` onstat -u -r 5|grep -E " B-|L-|active “ `
+某个会话连续出现，即等待状态持续较长时间
+
+` onstat -u -r 5|grep -E " PR|PX|active “ `
+某个会话连续出现，即说明关键区操作较长，有性能隐患
+
+` onstat -u |grep -E "PX|PR"|awk '{print "onstat -g ses "$3}'|sh >>PXR.ou `
+分析即时出现PR或PX状态的会话及SQL
+
+` onstat -u |grep -E "B-|L-"|awk '{print "onstat -g ses "$3}'|sh >>BL.out `
+分析即时出现等待状态的会话及SQL
+
+` onstat –g ses <sid> `
+` onstat –g stm <sid> `
+可以看到有问题会话的SQL语句。  
+` SET EXPLAIN ON 或 SET EXPLAIN ON AVOID_EXECUTE `
+sqexplain.out可以分析SQL执行策略  
+
+` onmode –Y `
+杀掉有问题的SQL。  
+##### 六.子查询
+相关子查询：相关子查询的执行依赖于外部查询的数据，外部查询执行一行，子查询就执行一次。如exists，not exists。  
+无关子查询：是独立于外部查询的子查询，子查询总共执行一次，执行完毕后将值传递给外部查询。如in。   
+
+子查询相当于自行确定了查询路径，放弃了DB优化的机会。
+`  select ** from A where id in (select id from B) `要求A应有较高的选择度，B的结果集合应该较小。  
+在实际中，尽可能用exists和not exists代替in或not in。  

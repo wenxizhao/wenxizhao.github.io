@@ -2,7 +2,7 @@
 layout: post
 title:  "一条数据狗的车辆保险研究"
 date:   2016-07-03 15:42:32 +0800
-categories: jekyll update
+categories: insurance
 ---
 ### 不想再说“不知道”
 
