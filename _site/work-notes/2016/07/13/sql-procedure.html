@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>文溪的博客</title>
-  <meta name="description" content="善为脚,勤为手,勇为魄,慧为眼,爱为心
-">
+  <title>存储过程笔记</title>
+  <meta name="description" content="一、变量初始化let语句，或者select into">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://yourdomain.com/">
+  <link rel="canonical" href="http://yourdomain.com/work-notes/2016/07/13/sql-procedure.html">
   <link rel="alternate" type="application/rss+xml" title="文溪的博客" href="http://yourdomain.com/feed.xml">
 </head>
 
@@ -55,56 +54,122 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-  <h1 class="page-heading"></h1>
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">存储过程笔记</h1>
+    <p class="post-meta"><time datetime="2016-07-13T15:42:32+08:00" itemprop="datePublished">Jul 13, 2016</time></p>
+  </header>
 
-  <ul class="post-list">
-  
-  <h2>insurance</h2>
-  <ul class="post-list">
-    
-    <span class="post-meta">Jul 12, 2016</span>
-    <h2>
-      <a class="post-link" href="/insurance/2016/07/12/favored-car.html">从保险数据看消费者最青睐的汽车品牌</a>
-    </h2>
-    
-    <span class="post-meta">Jul 3, 2016</span>
-    <h2>
-      <a class="post-link" href="/insurance/2016/07/03/welcome-to-jekyll.html">一条数据狗的车辆保险研究</a>
-    </h2>
-    
-  </ul>
-  
-  <h2>work-notes</h2>
-  <ul class="post-list">
-    
-    <span class="post-meta">Jul 26, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/26/performance-tools.html">性能测试工具</a>
-    </h2>
-    
-    <span class="post-meta">Jul 21, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/21/nginx.html">Nginx配置</a>
-    </h2>
-    
-    <span class="post-meta">Jul 21, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/21/SQL-notes.html">SQL优化</a>
-    </h2>
-    
-    <span class="post-meta">Jul 13, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/13/sql-procedure.html">存储过程笔记</a>
-    </h2>
-    
-  </ul>
-  
-  </ul>
+  <div class="post-content" itemprop="articleBody">
+    <h6 id="section">一、变量初始化</h6>
+<p>let语句，或者select into</p>
 
+<h6 id="section-1">二、执行</h6>
+<p><code class="highlighter-rouge"> execute function f() into v_bianliang;</code></p>
 
-</div>
+<p><code class="highlighter-rouge"> call f(); </code></p>
+
+<h6 id="section-2">三、调试</h6>
+<p>set debug file to ‘目录/文件名’</p>
+
+<p>trace on;</p>
+
+<p>例子:
+``` 
+drop function sp_ckt_check;
+CREATE FUNCTION ccpqry.sp_ckt_check(v_licenseno varchar(8))
+returning date as operateDate,int as clausecode,int as clausetype,
+int as enrolldate,int as seatcount,int as purchaseprice,
+int as chesun,int as sanzhe,int as zuowei</p>
+
+<p>define v_proposalno char(22);
+define v_clausecode int;
+define v_clausetype	int;
+define v_enrolldate	int;
+define v_seatcount	int;
+define v_purchaseprice	int;
+define v_kindcode_cs int;
+define v_kindcode_sz int;
+define v_kindcode_zw int;
+define v_operateDate date;
+define v_procname	varchar(50);</p>
+
+<p>let v_proposalno = null;	
+let v_procname = ‘sp_ckt_check’;
+–SET DEBUG FILE TO ‘proctrace/trace_’||v_procname||’.out’;
+–trace on;</p>
+
+<p>select b.proposalno into v_proposalno
+from prpcitem_car a,prpcmain b,prpcopymain c
+where licenseno=v_licenseno
+and b.riskcode=’DAA’
+and a.proposalno = b.proposalno 
+and c.applyno=b.proposalno
+and date(c.inserttimeforhis)&gt;=’20160201’
+and b.underwriteflag in (‘1’,’3’)
+and b.othflag[3]&lt;&gt;’1’
+and b.othflag[4]&lt;&gt;’1’
+and b.othflag[6]&lt;&gt;’1’;
+–trace v_proposalno;</p>
+
+<p>select count(*) into v_clausecode
+from prpcengage
+where proposalno=v_proposalno
+and clausecode in (‘9900444’,’9900445’,’9900446’);
+–trace v_clausecode;</p>
+
+<p>select count(*) into v_clausetype
+from prpcitem_car
+where proposalno=v_proposalno
+and clausetype = “F42”;
+–trace v_clausetype;</p>
+
+<p>select count(*) into v_seatcount
+from prpcitem_car
+where proposalno=v_proposalno
+and seatcount &lt;= “7”;
+–trace v_seatcount;</p>
+
+<p>select count(*) into v_purchaseprice
+from prpcitem_car
+where proposalno=v_proposalno
+and purchaseprice &lt; 500000;		
+–trace v_purchaseprice;</p>
+
+<p>select count(*) into v_enrolldate
+from prpcitem_car c,prpcopymain d
+where c.proposalno=d.applyno
+and c.proposalno=v_proposalno
+and date(d.inserttimeforhis)-date(c.enrolldate)&lt;2920;
+–trace v_enrolldate;</p>
+
+<p>select date(d.inserttimeforhis) into v_operateDate
+from prpcopymain d
+where d.applyno=v_proposalno;</p>
+
+<p>select count(distinct proposalno) into v_kindcode_cs
+from prpcitemkind
+where proposalno=v_proposalno
+and kindcode = “050202”;
+select count(distinct proposalno) into v_kindcode_sz
+from prpcitemkind
+where proposalno=v_proposalno
+and kindcode = “050602”–三者险（限额50万以上）
+and amount &gt;= “500000”;
+–trace v_kindcode_sz;</p>
+
+<p>select count(distinct proposalno) into v_kindcode_zw
+from prpcitemkind
+where proposalno=v_proposalno
+and kindcode = “050712”;RETURN 	v_operateDate,v_clausecode,v_clausetype,v_enrolldate,v_seatcount,v_purchaseprice,v_kindcode_cs,v_kindcode_sz,v_kindcode_zw;</p>
+
+<p>end function;                                            <br />
+```</p>
+
+  </div>
+
+</article>
 
       </div>
     </div>

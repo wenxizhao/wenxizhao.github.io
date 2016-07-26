@@ -6,12 +6,11 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>文溪的博客</title>
-  <meta name="description" content="善为脚,勤为手,勇为魄,慧为眼,爱为心
-">
+  <title>性能测试工具</title>
+  <meta name="description" content="一、Apache ab### 原理ab命令会创建很多的并发访问线程，模拟多个访问者同时对某一URL地址进行访问，其原理类似CC攻击（Challenge Collapsar，挑战黑洞）。">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://yourdomain.com/">
+  <link rel="canonical" href="http://yourdomain.com/work-notes/2016/07/26/performance-tools.html">
   <link rel="alternate" type="application/rss+xml" title="文溪的博客" href="http://yourdomain.com/feed.xml">
 </head>
 
@@ -55,56 +54,101 @@
 
     <div class="page-content">
       <div class="wrapper">
-        <div class="home">
+        <article class="post" itemscope itemtype="http://schema.org/BlogPosting">
 
-  <h1 class="page-heading"></h1>
+  <header class="post-header">
+    <h1 class="post-title" itemprop="name headline">性能测试工具</h1>
+    <p class="post-meta"><time datetime="2016-07-26T15:42:32+08:00" itemprop="datePublished">Jul 26, 2016</time></p>
+  </header>
 
-  <ul class="post-list">
-  
-  <h2>insurance</h2>
-  <ul class="post-list">
-    
-    <span class="post-meta">Jul 12, 2016</span>
-    <h2>
-      <a class="post-link" href="/insurance/2016/07/12/favored-car.html">从保险数据看消费者最青睐的汽车品牌</a>
-    </h2>
-    
-    <span class="post-meta">Jul 3, 2016</span>
-    <h2>
-      <a class="post-link" href="/insurance/2016/07/03/welcome-to-jekyll.html">一条数据狗的车辆保险研究</a>
-    </h2>
-    
-  </ul>
-  
-  <h2>work-notes</h2>
-  <ul class="post-list">
-    
-    <span class="post-meta">Jul 26, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/26/performance-tools.html">性能测试工具</a>
-    </h2>
-    
-    <span class="post-meta">Jul 21, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/21/nginx.html">Nginx配置</a>
-    </h2>
-    
-    <span class="post-meta">Jul 21, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/21/SQL-notes.html">SQL优化</a>
-    </h2>
-    
-    <span class="post-meta">Jul 13, 2016</span>
-    <h2>
-      <a class="post-link" href="/work-notes/2016/07/13/sql-procedure.html">存储过程笔记</a>
-    </h2>
-    
-  </ul>
-  
-  </ul>
+  <div class="post-content" itemprop="articleBody">
+    <h1 id="apache-ab">一、Apache ab</h1>
+<p>### 原理
+ab命令会创建很多的并发访问线程，模拟多个访问者同时对某一URL地址进行访问，其原理类似CC攻击（Challenge Collapsar，挑战黑洞）。</p>
 
+<p>因此，既可以用来测试Apache的负载压力，也可以测试nginx、lighthttp、tomcat、IIS等其它Web服务器的压力。
+### 用法
+参数很多，一般我们用 -c 和 -n 参数就可以了。</p>
 
-</div>
+<p><code class="highlighter-rouge"> ab -c 5000 -n 600 http://127.0.0.1/index.php </code></p>
+
+<p>-n后面的5000代表总共发出5000个请求；-600（模拟600个人同时访问），后面的网址表示测试的目标URL。</p>
+
+<h3 id="section">特点</h3>
+<p>ab命令对发出负载的计算机要求很低，既不会占用很高CPU，也不会占用很多内存，但却会给目标服务器造成巨大的负载。自己测试使用也须注意，否则一次上太多的负载，可能造成目标服务器因资源耗完，严重时甚至导致死机。</p>
+
+<p>在远程对web服务器进行压力测试，往往效果不理想（因为网络延时过大），建议使用内网的另一台或者多台服务器通过内网进行测试，这样得出的数据，准确度会高很多。
+# 二、Jemeter
+### 原理
+jmeter的架构和loadrunner原理一样，都是通过中间代理，监控和收集并发客户端发出的指令，把他们生成脚本，再发送到应用服务器，再监控服务器反馈结果的一个过程；
+### 特点
+支持多种服务类型测试，包括HTTP、HTTPS、SOAP、JDBC、Mail-POP3、LDAP等。可以录制、回访测试脚本。100%纯Java程序，具备高可移植性。</p>
+
+<p>分布式中间代理功能在jmeter中也有，这个分页式代理是指可设置多台代理在不同PC中，通过远程进行控制，即通过使用多台机器运行的谓的agant来分担load generator自身的压力，并借引来获取更大的并发用户数。</p>
+
+<p>jmeter可以通过逻辑控制器实现复杂的测试行为，相当于loadrunner中的测试场景；
+### Jemeter与LoadRunner比较</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>对比项</th>
+      <th>JMeter</th>
+      <th>LoadRunner</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>安装</td>
+      <td>简单，下载加压即可</td>
+      <td>复杂，安装包大约1G，安装时间大于1小时</td>
+    </tr>
+    <tr>
+      <td>录制/回放模式</td>
+      <td>支持</td>
+      <td>支持</td>
+    </tr>
+    <tr>
+      <td>测试协议</td>
+      <td>偏少，用户可自行扩展</td>
+      <td>较多，用户不可自行扩展</td>
+    </tr>
+    <tr>
+      <td>分布式大规模压力测试</td>
+      <td>支持</td>
+      <td>支持</td>
+    </tr>
+    <tr>
+      <td>IP欺骗功能</td>
+      <td>不支持</td>
+      <td>支持</td>
+    </tr>
+    <tr>
+      <td>图形报表</td>
+      <td>支持（较弱）</td>
+      <td>支持（很强）</td>
+    </tr>
+    <tr>
+      <td>测试逻辑控制</td>
+      <td>支持</td>
+      <td>支持</td>
+    </tr>
+    <tr>
+      <td>监控服务器资源（CPU，内存等）</td>
+      <td>支持</td>
+      <td>支持</td>
+    </tr>
+    <tr>
+      <td>功能测试</td>
+      <td>支持</td>
+      <td>不支持</td>
+    </tr>
+  </tbody>
+</table>
+
+  </div>
+
+</article>
 
       </div>
     </div>
