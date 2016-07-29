@@ -17,6 +17,3 @@ github_username:  github
 
 # Build settings
 markdown: kramdown
-
-#去掉根据permlinks中的categories,目录就支持中文
-permalink: /:year/:month/:day/:title
