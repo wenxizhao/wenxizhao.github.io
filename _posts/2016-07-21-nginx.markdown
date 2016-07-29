@@ -2,7 +2,7 @@
 layout: post
 title:  "Nginx配置"
 date:   2016-07-21 15:42:32 +0800
-categories: work-notes
+categories: 工作笔记
 ---
 #  一、http转发
 ```

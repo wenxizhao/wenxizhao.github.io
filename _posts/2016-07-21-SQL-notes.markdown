@@ -2,7 +2,7 @@
 layout: post
 title:  "SQL优化"
 date:   2016-07-21 15:42:32 +0800
-categories: work-notes
+categories: 工作笔记
 ---
 # SQL优化
 ### 索引

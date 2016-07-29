@@ -2,7 +2,7 @@
 layout: post
 title:  "存储过程笔记"
 date:   2016-07-13 15:42:32 +0800
-categories: work-notes
+categories: 工作笔记
 ---
 
 ######  一、变量初始化

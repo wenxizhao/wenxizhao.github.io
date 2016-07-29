@@ -2,7 +2,7 @@
 layout: post
 title:  "性能测试工具"
 date:   2016-07-26 15:42:32 +0800
-categories: work-notes
+categories: 工作笔记
 ---
 # 一、Apache ab
 ### 原理
