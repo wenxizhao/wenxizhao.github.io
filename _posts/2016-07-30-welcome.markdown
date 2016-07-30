@@ -1,0 +1,42 @@
+---
+layout: post
+title:  "Welcome to Wenxi's Blog"
+subtitle:   " \"Hello World, Hello Blog\""
+date:   2016-07-30 14:00:32 +0800
+author:     "Wenxi"
+header-img: "img/post-bg-welcome.jpg"
+categories: 生活
+tags:
+    - 生活
+---
+
+> “Yeah It's on. ”
+
+
+## 前言
+
+文溪 的 Blog 终于有个好看的模板了。
+
+
+2016 年, 总算有个地方可以好好写点东西了。
+
+
+作为一个程序员,  一直想有一个自己的博客, 每次看到技术大牛在博客上分享自己的东西, 总是心生羡慕. github提供免费的博客平台, 简直就是程序员的福音. 刚开示在ThoughtWorks一个大牛的指导下, 接触了Jekyll博客框架, 在最原始的例子上摸索着做了一个很朴素的博客, 虽然简陋却给了我不少信心和鼓励. 接下来就是找一个自己喜欢的模板套上去, 在知乎了一个问答下看到一个简约大气的模板, 就借用了, 于是有了博客现在的样式.
+
+<p id = "build"></p>
+---
+
+## 正文
+
+接下来说说搭建这个博客的技术细节。  
+
+博客采用 [GitHub Pages](https://pages.github.com/) + [Jekyll](http://jekyllrb.com/) 快速 Building Blog 的技术方法, 非常轻松时尚.
+
+其优点非常明显:
+
+* **Markdown** 带来的优雅写作体验
+* 利用 GitHub Pages 的域名和免费无限空间，不用自己折腾主机
+	* 如果需要自定义域名，也只需要简单改改 DNS 加个 CNAME 就好了
+* Jekyll 的自定制非常容易，基本就是个模版引擎
+
+网上有很多基于Jekyll+github搭建博客的教程, 在这里就不多啰嗦. 如果你也喜欢这个博客的模板, 可以参考模板主人的[Hux github](https://github.com/Huxpro/huxpro.github.io#featured-tags), 有非常详细的文档说明.

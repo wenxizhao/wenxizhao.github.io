@@ -1,8 +1,12 @@
 ---
 layout: post
 title:  "存储过程笔记"
+subtitle: "初始化 执行 调试"
 date:   2016-07-13 15:42:32 +0800
+author:     "Wenxi"
 categories: 工作笔记
+tags:
+    - SQL
 ---
 
 ######  一、变量初始化
